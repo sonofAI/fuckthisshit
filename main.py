@@ -12,15 +12,16 @@ from termcolor import colored, cprint
 def main():
     words = generate_words(10)
     for i in words:
-        cprint(i, 'blue', end=' ')
+        cprint(i, 'red', end=' ')
     print()
 
-    wait = input('Press Enter')
+    wait = input('Press Enter when ready')
     start_time = timer()
-    text = input('Type every word seperated by space and press Enter when you finish\n')
+    text = input('Type every word seperated by space and ' + colored('press Enter', 'green') + ' when you finish\n' + '-' * 30 + '\n')
     end_time = timer()
     time = round(end_time - start_time, 2)
     typed_words = list(text.split(' '))
+    print('-' * 30)
     wpm = calculate_average_speed(len(typed_words), time)
     acc = calculate_accuracy(words, typed_words)
     print(f'Speed: {wpm} words per minute.')
