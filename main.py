@@ -6,13 +6,13 @@
 # that's it for now.
 
 from timeit import default_timer as timer
-import datetime
 import random
+from termcolor import colored, cprint
 
 def main():
     words = generate_words(10)
     for i in words:
-        print(i, end=' ')
+        cprint(i, 'blue', end=' ')
     print()
 
     wait = input('Press Enter')
@@ -23,8 +23,8 @@ def main():
     typed_words = list(text.split(' '))
     wpm = calculate_average_speed(len(typed_words), time)
     acc = calculate_accuracy(words, typed_words)
-    print(wpm)
-    print(f'Accuracy: {acc}%')
+    print(f'Speed: {wpm} words per minute.')
+    print(f'Accuracy: {acc}%.')
 
 
 def calculate_accuracy(test_words: list, typed_words: list) -> float:
@@ -36,9 +36,15 @@ def calculate_accuracy(test_words: list, typed_words: list) -> float:
         if typed_words[i] == test_words[i]:
             continue
         else:
+            if len(typed_words[i]) > len(test_words[i]):
+                errors += len(typed_words[i]) - len(test_words[i])
+                continue
             for j in range(len(typed_words[i])):
-                if typed_words[i][j] != test_words[i][j]:
-                    errors += 1
+                try:
+                    if typed_words[i][j] != test_words[i][j]:
+                        errors += 1
+                except Exception as e:
+                    print(e)
 
     accuracy = (letters - errors) * 100
     accuracy /= letters
@@ -50,7 +56,7 @@ def calculate_average_speed(words: int, time: float) -> float:
     # wpm
     words_per_second = words / time
     wpm = words_per_second * 60
-    return round(wpm, 2)
+    return round(wpm)
 
 def generate_words(length: int) -> list:
     wordlist = ['print', 'shit', 'lol', 'physics', 'table', 'fools', 'hate']
