@@ -1,10 +1,3 @@
-# the idea is to create typing speed tester.
-# for the first demo, i will have 10 words printed out when program is run,
-# and it waits for the continue key from the user,
-# it starts the timer and stops when enter key is pressed,
-# prints out the typing speed(words per minute), accuracy
-# that's it for now.
-
 from timeit import default_timer as timer
 import random
 from termcolor import colored, cprint
