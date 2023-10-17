@@ -2,7 +2,16 @@ from timeit import default_timer as timer
 import random
 from termcolor import colored, cprint
 
+usage = 
+
 def main():
+    if len(argv) > 1:
+        if argv[1] == '-h' or argv[1] == '--help':
+            print('Usage: python3 typing_speed_tester.py [options]')
+            print()
+
+
+
     words = generate_words(10)
     for i in words:
         cprint(i, 'red', end=' ')
@@ -52,7 +61,7 @@ def calculate_average_speed(words: int, time: float) -> float:
     wpm = words_per_second * 60
     return round(wpm)
 
-def generate_words(length: int) -> list:
+def generate_words(length: int, list_type: str) -> list:
     wordlist = ['print', 'shit', 'lol', 'physics', 'table', 'fools', 'hate']
 
     words = []
