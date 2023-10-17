@@ -7,13 +7,11 @@ that's it for now.
 
 ### version 2.0:
 - write better wordlist or get from somewhere.
-done. have three wordlists.
 
 - add command options to run the program, like:
 ```
-python typing_speed_tester.py -n 10
-python typing_speed_tester.py -n 20
-python typing_speed_tester.py -n 30
+python typing_speed_tester.py -n 10 -pr
 ```
 `-n`: number of words to test
+`-pr`: wordlist type
 

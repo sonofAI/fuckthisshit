@@ -1,20 +1,49 @@
 from timeit import default_timer as timer
 import random
 from termcolor import colored, cprint
+from sys import argv
+import csv
 
-usage = 
+usage = '''
+Usage: python3 typing_speed_tester.py [options] [wordlist_type]
+    options:
+            -h, --help: prints this message and quits.
+            -n {integer}: number of words to test, default=10.
+    wordlist_type:
+            -t100, --top100: top 100 English words, default.
+            -t500, --top500: top 500 English words.
+            -pr, --programming: top 100 programming terms.
+'''
 
 def main():
     if len(argv) > 1:
         if argv[1] == '-h' or argv[1] == '--help':
-            print('Usage: python3 typing_speed_tester.py [options]')
-            print()
+            print(usage)
+            return
+        elif argv[1] == '-n':
+            try:
+                n = int(argv[2])
+            except:
+                print('Please provide number as after -n')
+                return
+        if argv[3]:
+            if argv[3] == '-t100' or argv[3] == '--top100':
+                list_type = 'top100.csv'
+            elif argv[3] == '-t500' or argv[3] == '--top500':
+                list_type = 'top500.csv'
+            elif argv[3] == '-pr' or argv[3] == '--programming':
+                list_type = 'programming100.csv'
+            else:
+                print('Please choose  right wordlist type, use -h for help.')
+                return
 
+    else:
+        n = 10
+        list_type = 'top100.csv'
 
-
-    words = generate_words(10)
+    words = generate_words(n, list_type)
     for i in words:
-        cprint(i, 'red', end=' ')
+        cprint(i, 'cyan', end=' ')
     print()
 
     wait = input('Press Enter when ready')
@@ -33,22 +62,31 @@ def main():
 def calculate_accuracy(test_words: list, typed_words: list) -> float:
     letters = 0
     errors = 0
+    typed_words_len = len(typed_words)
+    test_words_len = len(test_words)
 
-    for i in range(len(typed_words)):
-        letters += len(test_words[i])
+    if typed_words_len > test_words_len:
+        n = test_words_len - typed_words_len
+        del typed_words[n:]
+        typed_words_len = test_words_len
+
+    for i in range(typed_words_len):
+        test_current_word_len = len(test_words[i])
+        type_current_word_len = len(typed_words[i])
+
+        letters += test_current_word_len
         if typed_words[i] == test_words[i]:
             continue
         else:
-            if len(typed_words[i]) > len(test_words[i]):
-                errors += len(typed_words[i]) - len(test_words[i])
+            if type_current_word_len > test_current_word_len:
+                errors += type_current_word_len - test_current_word_len
                 continue
-            for j in range(len(typed_words[i])):
+            for j in range(type_current_word_len):
                 try:
                     if typed_words[i][j] != test_words[i][j]:
                         errors += 1
-                except Exception as e:
-                    print(e)
-
+                except:
+                    pass
     accuracy = (letters - errors) * 100
     accuracy /= letters
         
@@ -62,7 +100,9 @@ def calculate_average_speed(words: int, time: float) -> float:
     return round(wpm)
 
 def generate_words(length: int, list_type: str) -> list:
-    wordlist = ['print', 'shit', 'lol', 'physics', 'table', 'fools', 'hate']
+    with open(list_type, 'r') as f:
+        reader = csv.reader(f)
+        wordlist = [row[0] for row in reader]
 
     words = []
     for _ in range(length):
