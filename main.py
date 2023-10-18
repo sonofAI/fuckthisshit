@@ -3,6 +3,7 @@ import random
 from termcolor import colored, cprint
 from sys import argv
 import csv
+from os import get_terminal_size
 
 usage = '''
 Usage: python3 typing_speed_tester.py [options] [wordlist_type]
@@ -16,6 +17,8 @@ Usage: python3 typing_speed_tester.py [options] [wordlist_type]
 '''
 
 def main():
+    n = 10
+    list_type = 'top100.csv'
     if len(argv) > 1:
         if argv[1] == '-h' or argv[1] == '--help':
             print(usage)
@@ -23,10 +26,13 @@ def main():
         elif argv[1] == '-n':
             try:
                 n = int(argv[2])
+                if n <= 0 or n > 100:
+                    raise Exception
             except:
-                print('Please provide number as after -n')
+                print('Please provide correct number after -n')
+                print('It should be between 1 and 100.')
                 return
-        if argv[3]:
+        if len(argv) == 4:
             if argv[3] == '-t100' or argv[3] == '--top100':
                 list_type = 'top100.csv'
             elif argv[3] == '-t500' or argv[3] == '--top500':
@@ -37,18 +43,27 @@ def main():
                 print('Please choose  right wordlist type, use -h for help.')
                 return
 
-    else:
-        n = 10
-        list_type = 'top100.csv'
-
     words = generate_words(n, list_type)
+    terminal_columns = get_terminal_size().columns
+    print('-' * terminal_columns)
     for i in words:
         cprint(i, 'cyan', end=' ')
     print()
+    print('-' * terminal_columns)
 
-    wait = input('Press Enter when ready')
+    try:
+        input('Press Enter when ready')
+    except KeyboardInterrupt:
+        print()
+        print('quit')
+        return
     start_time = timer()
-    text = input('Type every word seperated by space and ' + colored('press Enter', 'green') + ' when you finish\n' + '-' * 30 + '\n')
+    try:
+        text = input('Type every word seperated by space and ' + colored('press Enter', 'green') + ' when you finish\n' + '-' * 30 + '\n')
+    except KeyboardInterrupt:
+        print()
+        print('quit')
+        return
     end_time = timer()
     time = round(end_time - start_time, 2)
     typed_words = list(text.split(' '))
